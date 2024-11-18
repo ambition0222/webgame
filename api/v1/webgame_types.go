@@ -32,11 +32,16 @@ type WebGameSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	// 期望状态
 
-	DisplayName string             `json:"displayName"`
-	GameType    string             `json:"gameType"`
-	ServerPort  intstr.IntOrString `json:"serverPort"`
-	Replicas    *int32             `json:"replicas"`
-	Image       string             `json:"image"`
+	DisplayName string `json:"displayName"`
+	GameType    string `json:"gameType"`
+	// +kubebuilder:default:=localhost
+	Domain string `json:"domain"`
+	// +kubebuilder:default:=/
+	IndexPage    string             `json:"indexPage"`
+	IngressClass string             `json:"ingressClass"`
+	ServerPort   intstr.IntOrString `json:"serverPort"`
+	Replicas     *int32             `json:"replicas"`
+	Image        string             `json:"image"`
 	// +kubebuilder:validation:Optional
 	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
 }
@@ -46,17 +51,22 @@ type WebGameStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	DeploymentStatus appsv1.DeploymentStatus `json:"deploymentStatus"`
+	DeploymentStatus appsv1.DeploymentStatus `json:"deploymentStatus,omitempty"`
+	GameAddress      string                  `json:"gameAddress,omitempty"`
+	ClusterIp        string                  `json:"clusterIp,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// 生成代码和crd
 // +kubebuilder:resource:shortName=wg
 // +kubebuilder:printcolumn:name="DisplayName",type="string",JSONPath=".spec.displayName"
 // +kubebuilder:printcolumn:name="GameType",type="string",JSONPath=".spec.gameType"
 // +kubebuilder:printcolumn:name="ServerPort",type="string",JSONPath=".spec.serverPort"
 // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas"
+// +kubebuilder:printcolumn:name="Available",type="integer",JSONPath=".status.deploymentStatus.availableReplicas"
+// +kubebuilder:printcolumn:name="Ready",type="integer",JSONPath=".status.deploymentStatus.readyReplicas"
+// +kubebuilder:printcolumn:name="Updated",type="integer",JSONPath=".status.deploymentStatus.updatedReplicas"
+// +kubebuilder:printcolumn:name="Observed",type="integer",JSONPath=".status.deploymentStatus.observedGeneration"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 
 // WebGame is the Schema for the webgames API.
