@@ -49,7 +49,7 @@ type WebGameStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // 生成代码和crd
-// +kubebuilder:resources:shortName=wg
+// +kubebuilder:resource:shortName=wg
 // +kubebuilder:printcolumn:name="DisplayName",type="string",JSONPath=".spec.displayName"
 // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"

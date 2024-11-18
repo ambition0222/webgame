@@ -6,4 +6,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: webgame-sample
 spec:
-  # TODO(user): Add fields here
+  displayName: test-webgame-instance
+  image: nginx:latest
+  replicas: 1
+  imagePullSecrets: []
