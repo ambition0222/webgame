@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"k8s.io/apimachinery/pkg/api/errors"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -47,10 +48,25 @@ type WebGameReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.1/pkg/reconcile
 func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	l := log.FromContext(ctx)
+	// 接收事件
+	l.Info("webgame event received")
+	// 完成事件处理
+	defer func() { l.Info("webgame event handling completed") }()
 
-	// TODO(user): your logic here
-
+	// 获取webgame实例
+	var webgame webgamev1.WebGame
+	if err := r.Get(ctx, req.NamespacedName, &webgame); err != nil {
+		// 不存在,触发的是删除事件
+		if errors.IsNotFound(err) {
+			l.Info("webgame not found. Ignoring since object must be deleted")
+			return ctrl.Result{}, nil
+		}
+		// 打印日志，等待重试
+		l.Error(err, "unable to fetch webgame,requeue")
+	}
+	// 成功获取，打印日志
+	l.Info("show webgame name", "name", webgame.GetName())
 	return ctrl.Result{}, nil
 }
 
