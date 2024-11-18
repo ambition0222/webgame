@@ -20,6 +20,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -31,9 +32,11 @@ type WebGameSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	// 期望状态
 
-	DisplayName string `json:"displayName"`
-	Replicas    *int32 `json:"replicas"`
-	Image       string `json:"image"`
+	DisplayName string             `json:"displayName"`
+	GameType    string             `json:"gameType"`
+	ServerPort  intstr.IntOrString `json:"serverPort"`
+	Replicas    *int32             `json:"replicas"`
+	Image       string             `json:"image"`
 	// +kubebuilder:validation:Optional
 	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
 }
@@ -51,6 +54,8 @@ type WebGameStatus struct {
 // 生成代码和crd
 // +kubebuilder:resource:shortName=wg
 // +kubebuilder:printcolumn:name="DisplayName",type="string",JSONPath=".spec.displayName"
+// +kubebuilder:printcolumn:name="GameType",type="string",JSONPath=".spec.gameType"
+// +kubebuilder:printcolumn:name="ServerPort",type="string",JSONPath=".spec.serverPort"
 // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 
