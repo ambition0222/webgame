@@ -7,8 +7,11 @@ metadata:
   name: webgame-sample
 spec:
   displayName: test-webgame-instance
-  gameType: super-mario
-  serverPort: 8000
+  gameType: "2048"
+  ingressClass: nginx
+  domain: localhost
+  indexPage: /index.html
+  serverPort: 80
   image: nginx:latest
   replicas: 1
   imagePullSecrets: []
