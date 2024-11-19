@@ -84,9 +84,11 @@ func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	deployment.SetName(webgame.GetName())
 	// mutate回调函数(可修改)
 	mutate := func() error {
+		// labels merge 后者覆盖前者
 		deployment.SetLabels(labels.Merge(deployment.GetLabels(), webgame.GetLabels()))
 		deployment.Spec.Replicas = webgame.Spec.Replicas
 		deployment.Spec.Selector = &metav1.LabelSelector{MatchLabels: selector}
+		deployment.Spec.Template.SetLabels(labels.Merge(webgame.GetLabels(), selector))
 
 		container := corev1.Container{}
 		if len(deployment.Spec.Template.Spec.Containers) != 0 {
