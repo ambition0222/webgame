@@ -9,7 +9,7 @@ spec:
   displayName: test-webgame-instance
   gameType: "2048"
   ingressClass: nginx
-  domain: localhost
+  domain: webgame.metamaker.cn 
   indexPage: /index.html
   serverPort: 80
   image: nginx:latest
