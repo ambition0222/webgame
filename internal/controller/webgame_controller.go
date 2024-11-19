@@ -84,10 +84,12 @@ func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	deployment.SetName(webgame.GetName())
 	// mutate回调函数(可修改)
 	mutate := func() error {
-		// labels merge 后者覆盖前者
+		// set deployment labels
 		deployment.SetLabels(labels.Merge(deployment.GetLabels(), webgame.GetLabels()))
 		deployment.Spec.Replicas = webgame.Spec.Replicas
+		// set deployment selector
 		deployment.Spec.Selector = &metav1.LabelSelector{MatchLabels: selector}
+		// set pod labels
 		deployment.Spec.Template.SetLabels(labels.Merge(webgame.GetLabels(), selector))
 
 		container := corev1.Container{}
@@ -161,7 +163,7 @@ func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		ingress.Spec = networkingv1.IngressSpec{
 			IngressClassName: &webgame.Spec.IngressClass,
 			Rules: []networkingv1.IngressRule{{
-				//Host: webgame.Spec.Domain,
+				Host: webgame.Spec.Domain,
 				IngressRuleValue: networkingv1.IngressRuleValue{
 					HTTP: &networkingv1.HTTPIngressRuleValue{
 						Paths: []networkingv1.HTTPIngressPath{{
@@ -201,7 +203,7 @@ func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return nil
 	}
 	// update webgame status
-	res, err = controllerutil.CreateOrUpdate(ctx, r.Client, &webgame, mutate)
+	res, err = controllerutil.CreateOrPatch(ctx, r.Client, &webgame, mutate)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
