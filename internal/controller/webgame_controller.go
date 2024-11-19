@@ -148,7 +148,7 @@ func (r *WebGameReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	var (
 		ingress     = networkingv1.Ingress{}
 		pathType    = networkingv1.PathTypePrefix
-		path        = fmt.Sprintf("/%s/%s/", selector["gameType"], selector["instance"])
+		path        = fmt.Sprintf("/%s/%s", selector["gameType"], selector["instance"])
 		rewriteRule = fmt.Sprintf(`rewrite ^%s/(.*)$ /$1 break;`, path)
 		annotations = map[string]string{
 			"nginx.ingress.kubernetes.io/configuration-snippet": rewriteRule,
